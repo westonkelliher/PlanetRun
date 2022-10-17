@@ -487,25 +487,22 @@ def main():
 
     if cpt.clients_changed():
       clients = []
-      for info in cpt.get_client_info().split(";")[:-1]:
-        sdims = info.split(",")
-        w = int(sdims[0])
-        h = int(sdims[1])
-        clients.append((w,h))
+      for cli_str in cpt.get_client_info().split(";")[:-1]:
+        clients.append(cli_str)
       print(clients);
-      for i in range(len(clients)):
-        if i == 0:
-          cpt.assign_spec(i, "1001,20,30,100,100;]1002,550,200,120;") # TODO spec_from_dims
+      for cli_str in clients:
+        clid = int(cli_str.split(':')[0])
+        if clid  == 0:
+          cpt.assign_spec(cli_str, "]1001,20,30,100,100;]1002,550,200,120;") # TODO spec_from_dims
         else:
-          cpt.assign_spec(i, "1001,20,30,100,100;]")
-        print("Assigned spec for player " + str(i))
+          cpt.assign_spec(cli_str, "]1001,20,30,100,100;]")
+        print("Assigned spec for player " + str(clid))
     
 
     
     # control pad events
-    for player_id in range(len(clients)):
-      for eventstr in cpt.get_events(player_id).split(';')[:-1]:
-        print(eventstr)
+    for cli_str in clients:
+      for eventstr in cpt.get_events(cli_str).split(']')[:-1]:
         if 'Press' in eventstr:
           if level.state == 'won':
             level_index += 1
